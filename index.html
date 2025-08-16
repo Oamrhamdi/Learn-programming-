@@ -1,148 +1,493 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>𝔼ℕ𝔾 𝕆𝕄𝔸ℝ - ما قبل تعلم البرمجة</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ما قبل تعلم البرمجة | كُلية حسابات ومعلومات</title>
+  <meta name="description" content="تطبيق مهام تعليمي احترافي قبل تعلم البرمجة — 17 مرحلة + صفحة رئيسية + صفحة تواصل" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Cairo', sans-serif;
-      background: #000;
-      color: #fff;
-      direction: rtl;
+    :root{
+      --bg:#0b0b0f;             /* أسود فخم مائل للأزرق */
+      --panel:#121218;          /* لوحات داكنة */
+      --panel-2:#0f0f15;
+      --text:#e9e9ef;           /* نص فاتح */
+      --muted:#b9b9c6;          /* نص ثانوي */
+      --brand:#ff0033;          /* أحمر دموي */
+      --accent:#6c6cff;         /* بنفسجي خفيف للإضاءات */
+      --ok:#36d399;             /* أخضر تقدم */
+      --warning:#ffd166;        /* أصفر */
+      --danger:#ef476f;         /* وردي/أحمر */
+      --cardRadius:22px;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
     }
-    header {
-      background: #111;
-      padding: 10px;
-      text-align: center;
-      font-size: 28px;
-      color: crimson;
-      text-shadow: 0 0 10px red;
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0; background: radial-gradient(1200px 900px at 80% -10%, #171722 0%, #0b0b0f 45%, #050508 100%);
+      color:var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Tajawal, "Cairo", sans-serif;
     }
-    nav {
-      display: flex;
-      overflow-x: auto;
-      background: #222;
-      padding: 10px;
-      white-space: nowrap;
+
+    /* شريط علوي */
+    header{
+      position: sticky; top:0; z-index:100;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(10,10,14,.95), rgba(10,10,14,.75));
+      border-bottom: 1px solid rgba(255,255,255,.05);
     }
-    nav a {
-      flex: 0 0 auto;
-      margin: 0 10px;
-      color: #fff;
-      text-decoration: none;
-      font-size: 18px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      background: #333;
-      transition: background 0.3s;
+
+    .container{ width: min(1200px, 94vw); margin: 0 auto; }
+    .row{ display:flex; align-items:center; gap:14px; padding:14px 0; }
+
+    /* لوجو الدم */
+    .brand{
+      position: relative; font-weight:900; letter-spacing: 2px;
+      font-size: clamp(20px, 3.4vw, 36px); line-height:1;
+      color: var(--brand);
+      text-shadow: 0 0 6px rgba(255,0,40,.35), 0 6px 20px rgba(255,0,40,.25);
+      filter: drop-shadow(0 8px 18px rgba(255,0,40,.22));
     }
-    nav a:hover, nav a.active {
-      background: crimson;
+
+    /* تأثير نزيف الدم */
+    .brand::after{
+      content: ""; position:absolute; left: 0; right: 0; bottom: -8px; height: 8px;
+      background: var(--brand);
+      border-radius: 0 0 8px 8px; filter: blur(0.2px);
+      box-shadow: 0 8px 20px rgba(255,0,40,.35);
+      -webkit-mask: radial-gradient(8px 8px at 10% 0, #000 99%, transparent) 0 0/60px 100% repeat-x;
+              mask: radial-gradient(8px 8px at 10% 0, #000 99%, transparent) 0 0/60px 100% repeat-x;
     }
-    .page {
-      display: none;
-      padding: 20px;
+    .brand i.drop{ position:absolute; width:10px; height:14px; background:var(--brand); bottom:-24px; border-radius:50%; filter: drop-shadow(0 6px 12px rgba(255,0,40,.45)); }
+    .drop.d1{ right: 12%; animation: drip 3.6s infinite ease-in; }
+    .drop.d2{ right: 28%; animation: drip 4.2s 0.6s infinite ease-in; }
+    .drop.d3{ right: 52%; animation: drip 3.2s 1s infinite ease-in; }
+    @keyframes drip{
+      0%{ transform: translateY(0) scaleX(1); opacity: .95; }
+      80%{ opacity: 1; }
+      100%{ transform: translateY(28px) scaleX(.85); opacity: 0; }
     }
-    .active-page {
-      display: block;
+
+    /* شريط المراحل الأفقي */
+    .stage-strip{
+      display:flex; gap:10px; overflow:auto; padding:10px 2px 14px; scroll-snap-type: x mandatory;
     }
-    .tasks {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-      padding: 10px 0;
+    .stage-chip{
+      flex: 0 0 auto; scroll-snap-align:start;
+      padding:10px 14px; border-radius: 999px; border:1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      color:var(--text); text-decoration:none; font-weight:600; font-size: 14px;
+      box-shadow: var(--shadow);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
     }
-    .task {
-      flex: 0 0 auto;
-      background: #222;
-      padding: 10px;
-      border-radius: 10px;
-      min-width: 150px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.3s;
+    .stage-chip:hover{ transform: translateY(-2px); box-shadow: 0 14px 28px rgba(0,0,0,.5); }
+    .stage-chip.locked{ opacity:.55; cursor:not-allowed; position:relative; }
+    .stage-chip.locked::after{
+      content:"\1F512"; /* قفل */
+      margin-inline-start: 8px; opacity:.9;
     }
-    .task.done {
-      background: #2ecc71;
-      text-decoration: line-through;
+
+    /* تخطيط الصفحة */
+    main{ padding: 26px 0 40px; }
+
+    .page{ display:none; }
+    .page.active{ display:block; }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border: 1px solid rgba(255,255,255,.07);
+      box-shadow: var(--shadow);
+      border-radius: var(--cardRadius);
+      padding: 22px;
     }
-    .progress {
-      margin-top: 15px;
-      background: #333;
-      border-radius: 10px;
-      overflow: hidden;
-      height: 20px;
+
+    .hero{
+      display:grid; gap:22px; grid-template-columns: 1.2fr .8fr; align-items:center;
     }
-    .progress-bar {
-      background: crimson;
-      height: 100%;
-      width: 0;
-      transition: width 0.4s;
+    @media (max-width: 900px){ .hero{ grid-template-columns: 1fr; } }
+
+    .muted{ color:var(--muted); }
+
+    /* شريط تقدم */
+    .progress{
+      height: 12px; background: #1b1b24; border-radius: 999px; overflow:hidden; border:1px solid rgba(255,255,255,.06);
     }
+    .progress > i{ display:block; height:100%; width: 0%; background: linear-gradient(90deg, var(--ok), #32b6ff); }
+
+    .grid{ display:grid; gap:14px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+    @media (max-width: 700px){ .grid{ grid-template-columns: 1fr; } }
+
+    /* قائمة المهام */
+    .tasks{ display:grid; gap:10px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    .task{
+      display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: radial-gradient(300px 140px at 110% -40%, rgba(110,110,255,.06), transparent 40%),
+                  linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    }
+    .task input{ width:20px; height:20px; accent-color: var(--ok); cursor:pointer; }
+    .task label{ user-select:none; cursor:pointer; font-weight:600; }
+
+    .links{ display:flex; flex-wrap:wrap; gap:10px; }
+    .btn{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius: 12px; text-decoration:none;
+      color: var(--text); border:1px solid rgba(255,255,255,.09);
+      background: linear-gradient(180deg, #14141b, #0f0f14);
+      transition: .2s ease;
+    }
+    .btn:hover{ transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,.5); }
+
+    footer{ margin-top: 30px; text-align:center; color:var(--muted); font-size:14px; }
+
+    .kpis{ display:flex; gap:10px; flex-wrap:wrap; }
+    .kpi{
+      padding:10px 14px; border:1px solid rgba(255,255,255,.08); border-radius: 12px;
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      font-weight:700; min-width: 160px; text-align:center;
+    }
+
+    .title{ margin: 0 0 12px; font-size: clamp(22px, 3vw, 30px); }
+    .subtitle{ margin: 10px 0 4px; font-size: 16px; color: var(--muted); }
+
+    .pill{ display:inline-block; padding:6px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.08); color:var(--muted); font-size:12px; }
   </style>
 </head>
 <body>
-  <header>𝔼ℕ𝔾 𝕆𝕄𝔸ℝ</header>
-  <nav id="navbar"></nav>
+  <header>
+    <div class="container">
+      <div class="row" style="justify-content: space-between;">
+        <div class="brand" aria-label="𝔼ℕ𝔾 𝕆𝕄𝔸ℝ">𝔼ℕ𝔾 𝕆𝕄𝔸ℝ
+          <i class="drop d1"></i><i class="drop d2"></i><i class="drop d3"></i>
+        </div>
+        <nav class="stage-strip" id="navStrip" aria-label="المراحل"></nav>
+      </div>
+    </div>
+  </header>
 
-  <div id="pages"></div>
+  <main class="container">
+    <!-- الصفحات 1..19 -->
+
+    <!-- صفحة 1: الرئيسية -->
+    <section class="page active" id="page-1">
+      <div class="hero card">
+        <div>
+          <h1 class="title">أهلًا بكم في <span style="color:var(--accent);">موقع العلم والتأسيس</span></h1>
+          <p class="muted" style="font-size:18px; line-height:1.9;">
+            هذا التطبيق العصري يُنظم مشوارك التعليمي قبل تعلم البرمجة وفي "كُلية حسابات ومعلومات" عبر <b>17 مرحلة متتابعة</b>.
+            كل مرحلة تحتوي مهام (فيديوهات)، مع <b>نسبة إنجاز</b>، وعدّاد <b>المكتمل</b> و<b>المتبقي</b>، وحفظ تلقائي للتقدم.
+            لا يمكنك فتح مرحلة إلا بعد إتمام المرحلة السابقة بالكامل — خطوة بخطوة حتى الاحتراف.
+          </p>
+          <div class="kpis" id="globalKpis"></div>
+          <p class="subtitle">ابدأ الآن من المرحلة 1، أو تصفّح المراحل أفقيًا من الأعلى.</p>
+          <div class="pill">جميع النسخ محفوظة للمالك — 𝔼ℕ𝔾 𝕆𝕄𝔸ℝ</div>
+        </div>
+        <div class="card" style="background: radial-gradient(240px 140px at 20% -20%, rgba(255,0,40,.06), transparent 40%), linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));">
+          <h3 class="title" style="margin-bottom:10px;">نظرة عامة سريعة</h3>
+          <div class="subtitle">المراحل متتالية: يجب إنهاء 1 قبل 2، وهكذا.</div>
+          <div id="overviewList" class="tasks" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <footer>
+        انتظروا باقي المواقع والتطبيقات — تصميم وتنفيذ واجهة فاخرة بخلفية سوداء.
+      </footer>
+    </section>
+
+    <!-- صفحات 2..18: مراحل -->
+    <!-- سيتم توليدها برمجيًا داخل #pagesRoot -->
+    <div id="pagesRoot"></div>
+
+    <!-- صفحة 19: طرق التواصل -->
+    <section class="page" id="page-19">
+      <div class="card">
+        <h2 class="title">طرق التواصل</h2>
+        <p class="muted">تواصل معنا عبر القنوات التالية:</p>
+        <div class="links" style="margin-top:12px;">
+          <a class="btn" target="_blank" rel="noopener" href="https://youtube.com/@omarhmady-1?si=_vl_59G7ltJfhstn">قناة اليوتيوب</a>
+          <a class="btn" target="_blank" rel="noopener" href="https://t.me/Gaming402">تيليجرام</a>
+          <a class="btn" href="mailto:oamrhamed4321@gmail.com">البريد الإلكتروني: oamrhamed4321@gmail.com</a>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    const stages = 19; // الرئيسية + 17 مرحلة + تواصل
-    const navbar = document.getElementById("navbar");
-    const pages = document.getElementById("pages");
+    // === بيانات المراحل ===
+    const stages = [
+      { id:1,  title:"CS50",                        tasks:82,  links:[
+          {label:"قائمة التشغيل", url:"https://youtube.com/playlist?list=PLknwEmKsW8OvsdJ64v5YljHNtt100kN6w&si=aSh8KAERzTOp5RMB"}
+        ]},
+      { id:2,  title:"ما قبل تعلم البرمجة",         tasks:10,  links:[
+          {label:"قائمة التشغيل", url:"https://youtube.com/playlist?list=PLDoPjvoNmBAx8xKvAXpb6f0Urj98Xo7zg&si=svdwTp344wTyNUcO"}
+        ]},
+      { id:3,  title:"C++",                        tasks:40,  links:[
+          {label:"فيديو", url:"https://youtu.be/07AC2Syf4Yg?si=WDzr7avrvtX9kqV6"},
+          {label:"قائمة تشغيل", url:"https://youtube.com/playlist?list=PLCInYL3l2AajFAiw4s1U4QbGszcQ-rAb3&si=i8SgXFfbzhI8Hyy6"},
+          {label:"كورس آخر", url:"https://youtu.be/gAKDUIQCeKM?si=OV1P4vTZvcWEctff"}
+        ]},
+      { id:4,  title:"OOP",                        tasks:9,   links:[
+          {label:"فيديو", url:"https://youtu.be/aJG-KnmfFxM?si=H8oF71c2SkWupDZM"},
+          {label:"كورس آخر", url:"https://youtu.be/e8o481vejaQ?si=QasgBiXwJqMrDrFQ"}
+        ]},
+      { id:5,  title:"Data Structure",             tasks:38,  links:[
+          {label:"قائمة التشغيل", url:"https://youtube.com/playlist?list=PLCInYL3l2AajqOUW_2SwjWeMwf4vL4RSp&si=2F0FxAACMos-g0xz"}
+        ]},
+      { id:6,  title:"Algorithm",                  tasks:68,  links:[
+          {label:"قائمة التشغيل", url:"https://youtube.com/playlist?list=PLL2zWZTDFZzjxarUL23ydiOgibhRipGYC&si=-W7SqbBKz46WFKQa"}
+        ]},
+      { id:7,  title:"Problem Solving",            tasks:103, links:[
+          {label:"فيديو", url:"https://youtu.be/0QD0CwOUX5E?si=Jdrb03pXUQSQ1W5t"},
+          {label:"قائمة تشغيل", url:"https://youtube.com/playlist?list=PLDoPjvoNmBAyX4CCOP--TR36SfD5g7gru&si=PetKQkv-NJxDsYvQ"}
+        ]},
+      { id:8,  title:"Database",                   tasks:11,  links:[
+          {label:"قائمة التشغيل", url:"https://youtube.com/playlist?list=PLknwEmKsW8OveN7SrZN5QjwyXLBzUDkJB&si=kaBh_swDDJnzg5fS"}
+        ]},
+      { id:9,  title:"CCNA",                       tasks:49,  links:[
+          {label:"قائمة تشغيل 1", url:"https://youtube.com/playlist?list=PL8s4OGp06499sD76hhwURj6vKDPPMhxHD&si=vG4DK9K_on_Nwo8c"},
+          {label:"قائمة تشغيل 2", url:"https://youtube.com/playlist?list=PLZmPGUyBFvUrvoa-NYzcUWFpxoZR11id_&si=mnxbZlKpQYbavGeH"}
+        ]},
+      { id:10, title:"Flutter",                    tasks:117, links:[
+          {label:"قائمة التشغيل", url:"https://youtube.com/playlist?list=PLw6Y5u47CYq47oDw63bMqkq06fjuoK_GJ&si=Np04IOdpdr0EqBvD"}
+        ]},
+      { id:11, title:"Linux",                      tasks:1,   links:[
+          {label:"فيديو", url:"https://youtu.be/OxL0B1F65W8?si=rM_EiEymlU1-1qn4"}
+        ]},
+      { id:12, title:"Statistics",                 tasks:24,  links:[
+          {label:"فيديو", url:"https://youtu.be/K9teElePNkk?si=KpCpVJmPkXi7RIeV"},
+          {label:"قائمة تشغيل", url:"https://youtube.com/playlist?list=PLVpJGVBmPnw3eRSzC90oXA6gBcG-nEYIe&si=78TNOJm8pImoy3bn"}
+        ]},
+      { id:13, title:"Probability",                tasks:44,  links:[
+          {label:"قائمة التشغيل", url:"https://youtube.com/playlist?list=PLMrJAkhIeNNR3sNYvfgiKgcStwuPSts9V&si=PESKavyAOufJsGY1"}
+        ]},
+      { id:14, title:"HTML",                       tasks:29,  links:[
+          {label:"فيديو", url:"https://youtu.be/cvNTgKw8VlY?si=F5ZrUQr6vD2hl2CP"},
+          {label:"قائمة تشغيل", url:"https://youtube.com/playlist?list=PLknwEmKsW8OvX7kZhsv6I6tT8SKDXDwUc&si=Uj5rtNv73Ywep2Wa"}
+        ]},
+      { id:15, title:"CSS",                        tasks:53,  links:[
+          {label:"فيديو", url:"https://youtu.be/h1mNPEjva8U?si=2ogSPgQU8PEsCl_n"},
+          {label:"قائمة تشغيل", url:"https://youtube.com/playlist?list=PLknwEmKsW8OuN04Odt2sJqt4aAnkp-iYA&si=APoXEzSNeh-_hQQ5"}
+        ]},
+      { id:16, title:"JavaScript",                 tasks:80,  links:[
+          {label:"قائمة التشغيل", url:"https://youtube.com/playlist?list=PLknwEmKsW8OuTqUDaFRBiAViDZ5uI3VcE&si=yea4GQik7uAGv60z"}
+        ]},
+      { id:17, title:"Python",                     tasks:53,  links:[
+          {label:"قائمة التشغيل", url:"https://youtube.com/playlist?list=PLknwEmKsW8OsG8dnisr_-2WGyx7lpgGEE&si=lY2m3VJuHYzP8Daw"}
+        ]},
+    ];
 
-    // إنشاء القوائم والصفحات
-    for (let i = 0; i < stages; i++) {
-      let name = i === 0 ? "الرئيسية" : (i === stages-1 ? "التواصل" : i);
-      let link = document.createElement("a");
-      link.innerText = name;
-      link.href = "#";
-      link.onclick = () => openPage(i);
-      if (i === 0) link.classList.add("active");
-      navbar.appendChild(link);
+    // توليد شريط الملاحة (Home + 17 مراحل + تواصل)
+    const navStrip = document.getElementById('navStrip');
+    function buildNav(){
+      // صفحة رئيسية
+      const home = document.createElement('a');
+      home.className='stage-chip'; home.href='#page-1'; home.textContent='الرئيسية';
+      navStrip.appendChild(home);
 
-      let page = document.createElement("div");
-      page.classList.add("page");
-      if (i === 0) page.classList.add("active-page");
-      page.id = "page-"+i;
-      if (i === 0) {
-        page.innerHTML = `<h2>مرحبا بك 👋</h2><p>هذا هو تطبيق ما قبل تعلم البرمجة.</p>`;
-      } else if (i === stages-1) {
-        page.innerHTML = `<h2>📞 تواصل معنا</h2><p>واتساب - فيسبوك - جيميل</p>`;
-      } else {
-        let tasks = "";
-        for (let t = 1; t <= 5; t++) {
-          tasks += `<div class='task' onclick='toggleTask(${i},${t},this)'>فيديو ${t}</div>`;
+      // المراحل 1..17
+      stages.forEach(s => {
+        const a = document.createElement('a');
+        a.className='stage-chip'; a.dataset.stageId=s.id; a.href=`#page-${s.id+1}`; // الصفحات 2..18
+        a.textContent = `${s.id}`; // بدون كلمة "المرحلة"
+        navStrip.appendChild(a);
+      });
+
+      // تواصل صفحة 19
+      const contact = document.createElement('a');
+      contact.className='stage-chip'; contact.href='#page-19'; contact.textContent='التواصل';
+      navStrip.appendChild(contact);
+    }
+
+    // توليد صفحات المراحل
+    const pagesRoot = document.getElementById('pagesRoot');
+    function buildStagePages(){
+      stages.forEach(s => {
+        const page = document.createElement('section');
+        page.className='page'; page.id = `page-${s.id+1}`; // 2..18
+
+        page.innerHTML = `
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+              <h2 class="title" style="margin:0;">${s.id} — ${s.title}</h2>
+              <span class="pill">عدد الفيديوهات: <b>${s.tasks}</b></span>
+            </div>
+            <div class="subtitle">لا يمكن فتح هذه المرحلة إلا بعد إتمام المرحلة السابقة بالكامل.</div>
+
+            <div class="grid" style="margin-top:12px;">
+              <div>
+                <div class="subtitle">مصادر المرحلة</div>
+                <div class="links">
+                  ${s.links.map(l=>`<a class="btn" target="_blank" rel="noopener" href="${l.url}">${l.label}</a>`).join('')}
+                </div>
+
+                <div style="margin-top:16px;">
+                  <div class="subtitle">التقدم</div>
+                  <div class="progress" aria-label="نسبة التقدم">
+                    <i id="bar-${s.id}"></i>
+                  </div>
+                  <div class="kpis" style="margin-top:10px;">
+                    <div class="kpi" id="kpi-done-${s.id}">تم: 0</div>
+                    <div class="kpi" id="kpi-left-${s.id}">متبقي: ${s.tasks}</div>
+                    <div class="kpi" id="kpi-pct-${s.id}">0%</div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="subtitle">المهام</div>
+                <div class="tasks" id="tasks-${s.id}"></div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        pagesRoot.appendChild(page);
+      });
+    }
+
+    // حفظ واستعادة التقدم
+    const LS_KEY = 'precode.app.progress.v1';
+    function getProgress(){
+      try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+      catch { return {}; }
+    }
+    function setProgress(data){ localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+
+    function stageKey(sid){ return `s${sid}`; }
+    function getStageDoneCount(sid){
+      const data = getProgress();
+      const arr = data[stageKey(sid)] || [];
+      return arr.length;
+    }
+
+    function isStageComplete(sid){
+      const st = stages.find(x=>x.id===sid);
+      return getStageDoneCount(sid) >= st.tasks;
+    }
+
+    // بناء المهام مع أقفال الوصول
+    function buildTasks(){
+      const data = getProgress();
+      stages.forEach(s => {
+        const wrap = document.getElementById(`tasks-${s.id}`);
+        const doneArr = data[stageKey(s.id)] || [];
+        wrap.innerHTML = '';
+        for(let i=1;i<=s.tasks;i++){
+          const id = `s${s.id}-t${i}`;
+          const task = document.createElement('div');
+          task.className='task';
+          task.innerHTML = `
+            <input type="checkbox" id="${id}" ${doneArr.includes(i)?'checked':''} />
+            <label for="${id}">فيديو ${i}</label>
+          `;
+          const cb = task.querySelector('input');
+          cb.addEventListener('change', ()=>{
+            const d = getProgress();
+            const k = stageKey(s.id);
+            const arr = new Set(d[k] || []);
+            if(cb.checked) arr.add(i); else arr.delete(i);
+            d[k] = [...arr].sort((a,b)=>a-b);
+            setProgress(d);
+            updateStageUI(s.id);
+            lockNavByProgress();
+            buildOverview();
+          });
+          wrap.appendChild(task);
         }
-        page.innerHTML = `<h2>مرحلة ${i}</h2>
-          <div class='tasks'>${tasks}</div>
-          <div class='progress'><div class='progress-bar' id='progress-${i}'></div></div>`;
-      }
-      pages.appendChild(page);
+        updateStageUI(s.id);
+      });
     }
 
-    function openPage(i) {
-      document.querySelectorAll(".page").forEach(p=>p.classList.remove("active-page"));
-      document.querySelectorAll("nav a").forEach(a=>a.classList.remove("active"));
-      document.getElementById("page-"+i).classList.add("active-page");
-      navbar.children[i].classList.add("active");
+    // تحديث شريط التقدم والعدادات
+    function updateStageUI(sid){
+      const st = stages.find(x=>x.id===sid);
+      const done = getStageDoneCount(sid);
+      const left = Math.max(0, st.tasks - done);
+      const pct = Math.round((done / st.tasks) * 100);
+      const bar = document.getElementById(`bar-${sid}`);
+      const kDone = document.getElementById(`kpi-done-${sid}`);
+      const kLeft = document.getElementById(`kpi-left-${sid}`);
+      const kPct  = document.getElementById(`kpi-pct-${sid}`);
+      if(bar) bar.style.width = pct + '%';
+      if(kDone) kDone.textContent = 'تم: ' + done;
+      if(kLeft) kLeft.textContent = 'متبقي: ' + left;
+      if(kPct)  kPct.textContent  = pct + '%';
+      updateGlobalKpis();
     }
 
-    function toggleTask(stage, task, el) {
-      el.classList.toggle("done");
-      saveProgress(stage);
+    // لمحة عامة في الرئيسية
+    function buildOverview(){
+      const box = document.getElementById('overviewList');
+      box.innerHTML='';
+      stages.forEach(s=>{
+        const done = getStageDoneCount(s.id);
+        const pct = Math.round(done / s.tasks * 100);
+        const item = document.createElement('div');
+        item.className='task';
+        item.innerHTML = `<div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span class="pill">${s.id}</span>
+            <b>${s.title}</b>
+          </div>
+          <div class="progress" style="width:260px; max-width:100%;"><i style="width:${pct}%;"></i></div>
+          <small class="muted">${done}/${s.tasks} مكتمل (${pct}%)</small>
+        </div>`;
+        box.appendChild(item);
+      });
     }
 
-    function saveProgress(stage) {
-      let done = document.querySelectorAll(`#page-${stage} .task.done`).length;
-      let total = document.querySelectorAll(`#page-${stage} .task`).length;
-      let percent = (done/total)*100;
-      document.getElementById("progress-"+stage).style.width = percent+"%";
+    // KPI عامة لكل المنظومة
+    function updateGlobalKpis(){
+      const g = document.getElementById('globalKpis');
+      const total = stages.reduce((a,s)=>a+s.tasks,0);
+      const done  = stages.reduce((a,s)=>a+getStageDoneCount(s.id),0);
+      const left  = Math.max(0, total - done);
+      const pct   = Math.round(done/total*100);
+      g.innerHTML = `
+        <div class="kpi">المهام الكلية: ${total}</div>
+        <div class="kpi">المكتمل: ${done}</div>
+        <div class="kpi">المتبقي: ${left}</div>
+        <div class="kpi">النسبة الكلية: ${pct}%</div>
+      `;
     }
+
+    // قفل الروابط حسب التقدم: لا تفتح المرحلة N إلا إذا اكتملت N-1
+    function lockNavByProgress(){
+      const chips = [...document.querySelectorAll('.stage-chip[data-stage-id]')];
+      chips.forEach(ch => {
+        const sid = +ch.dataset.stageId;
+        const canOpen = sid===1 ? true : isStageComplete(sid-1);
+        ch.classList.toggle('locked', !canOpen);
+        ch.onclick = (e)=>{
+          if(!canOpen){ e.preventDefault(); shake(ch); }
+        };
+      });
+    }
+
+    // حركة اهتزاز بسيطة عند المنع
+    function shake(el){
+      el.animate([
+        { transform:'translateX(0)' },
+        { transform:'translateX(-6px)' },
+        { transform:'translateX(6px)' },
+        { transform:'translateX(0)' },
+      ], { duration: 300, iterations: 1 });
+    }
+
+    // نظام الصفحات (hash routing)
+    function showPageFromHash(){
+      const target = location.hash || '#page-1';
+      [...document.querySelectorAll('.page')].forEach(p=>p.classList.remove('active'));
+      const el = document.querySelector(target);
+      (el||document.getElementById('page-1')).classList.add('active');
+    }
+    window.addEventListener('hashchange', showPageFromHash);
+
+    // تشغيل أولي
+    buildNav();
+    buildStagePages();
+    buildTasks();
+    buildOverview();
+    lockNavByProgress();
+    showPageFromHash();
   </script>
 </body>
 </html>
-
