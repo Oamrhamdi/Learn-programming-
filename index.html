@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>𝔼ℕ𝔾 𝕆𝕄𝔸ℝ - ما قبل تعلم البرمجة</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background: #000;
+      color: #fff;
+      direction: rtl;
+    }
+    header {
+      background: #111;
+      padding: 10px;
+      text-align: center;
+      font-size: 28px;
+      color: crimson;
+      text-shadow: 0 0 10px red;
+    }
+    nav {
+      display: flex;
+      overflow-x: auto;
+      background: #222;
+      padding: 10px;
+      white-space: nowrap;
+    }
+    nav a {
+      flex: 0 0 auto;
+      margin: 0 10px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: #333;
+      transition: background 0.3s;
+    }
+    nav a:hover, nav a.active {
+      background: crimson;
+    }
+    .page {
+      display: none;
+      padding: 20px;
+    }
+    .active-page {
+      display: block;
+    }
+    .tasks {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px 0;
+    }
+    .task {
+      flex: 0 0 auto;
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+      min-width: 150px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .task.done {
+      background: #2ecc71;
+      text-decoration: line-through;
+    }
+    .progress {
+      margin-top: 15px;
+      background: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 20px;
+    }
+    .progress-bar {
+      background: crimson;
+      height: 100%;
+      width: 0;
+      transition: width 0.4s;
+    }
+  </style>
+</head>
+<body>
+  <header>𝔼ℕ𝔾 𝕆𝕄𝔸ℝ</header>
+  <nav id="navbar"></nav>
+
+  <div id="pages"></div>
+
+  <script>
+    const stages = 19; // الرئيسية + 17 مرحلة + تواصل
+    const navbar = document.getElementById("navbar");
+    const pages = document.getElementById("pages");
+
+    // إنشاء القوائم والصفحات
+    for (let i = 0; i < stages; i++) {
+      let name = i === 0 ? "الرئيسية" : (i === stages-1 ? "التواصل" : i);
+      let link = document.createElement("a");
+      link.innerText = name;
+      link.href = "#";
+      link.onclick = () => openPage(i);
+      if (i === 0) link.classList.add("active");
+      navbar.appendChild(link);
+
+      let page = document.createElement("div");
+      page.classList.add("page");
+      if (i === 0) page.classList.add("active-page");
+      page.id = "page-"+i;
+      if (i === 0) {
+        page.innerHTML = `<h2>مرحبا بك 👋</h2><p>هذا هو تطبيق ما قبل تعلم البرمجة.</p>`;
+      } else if (i === stages-1) {
+        page.innerHTML = `<h2>📞 تواصل معنا</h2><p>واتساب - فيسبوك - جيميل</p>`;
+      } else {
+        let tasks = "";
+        for (let t = 1; t <= 5; t++) {
+          tasks += `<div class='task' onclick='toggleTask(${i},${t},this)'>فيديو ${t}</div>`;
+        }
+        page.innerHTML = `<h2>مرحلة ${i}</h2>
+          <div class='tasks'>${tasks}</div>
+          <div class='progress'><div class='progress-bar' id='progress-${i}'></div></div>`;
+      }
+      pages.appendChild(page);
+    }
+
+    function openPage(i) {
+      document.querySelectorAll(".page").forEach(p=>p.classList.remove("active-page"));
+      document.querySelectorAll("nav a").forEach(a=>a.classList.remove("active"));
+      document.getElementById("page-"+i).classList.add("active-page");
+      navbar.children[i].classList.add("active");
+    }
+
+    function toggleTask(stage, task, el) {
+      el.classList.toggle("done");
+      saveProgress(stage);
+    }
+
+    function saveProgress(stage) {
+      let done = document.querySelectorAll(`#page-${stage} .task.done`).length;
+      let total = document.querySelectorAll(`#page-${stage} .task`).length;
+      let percent = (done/total)*100;
+      document.getElementById("progress-"+stage).style.width = percent+"%";
+    }
+  </script>
+</body>
+</html>
+
